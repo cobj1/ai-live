@@ -20,6 +20,8 @@ import SDocs from './docs.vue'
 import { DocsApi } from '@/api/docs';
 import { useRoute } from 'vue-router'
 
+import axios from '@/axios/live-service'
+
 const route = useRoute()
 
 const docsRef = ref()
@@ -28,6 +30,11 @@ const images = ref([])
 
 const loadItmes = async () => {
     images.value = await DocsApi.list()
+
+    await axios({
+        url: `http://192.168.124.124:12001/api/ppt/list/${route.params.chapterid}`,
+        method: 'post'
+    })
 }
 
 const handleLoadImg = (img) => {

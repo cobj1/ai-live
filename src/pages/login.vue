@@ -9,7 +9,7 @@
         <v-card class="login-form">
 
           <v-theme-provider theme="dark">
-            <spacegt-login :proxy="proxy" @login="onLogin"> </spacegt-login>
+            <spacegt-login :proxy="proxy" locale="zhHans" @login="onLogin"> </spacegt-login>
           </v-theme-provider>
 
           <div class="qrcode-group">
@@ -102,7 +102,7 @@ const onLogin = (data) => {
 
 .login-form {
   color: #ffffff;
-  width: 400px;
+  width: 530px;
   background-color: transparent;
   backdrop-filter: blur(8px);
   padding: 24px;
