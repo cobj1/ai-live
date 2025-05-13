@@ -14,6 +14,7 @@ declare module 'vue' {
     Button: typeof import('./src/components/ui/button/Button.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     InteractiveGridPattern: typeof import('./src/components/ui/interactive-grid-pattern/InteractiveGridPattern.vue')['default']
+    LeftMenu: typeof import('./src/components/manage/left-menu.vue')['default']
     LetterPullup: typeof import('./src/components/ui/letter-pullup/LetterPullup.vue')['default']
     LiveTop: typeof import('./src/components/LiveTop.vue')['default']
     Loading: typeof import('./src/components/Loading.vue')['default']

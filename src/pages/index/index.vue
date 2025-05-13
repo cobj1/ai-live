@@ -17,6 +17,7 @@
       </div>
     </Motion>
 
+    <v-btn text="超链接" @click="Test"></v-btn>
     <swiper :slidesPerView="3" :spaceBetween="0" :centeredSlides="true" :loop="true" :navigation="true"
       :pagination="{ clickable: true, }" :modules="modules" class="mySwiper">
       <swiper-slide>
@@ -63,6 +64,10 @@ import Card from './card.vue'
 
 const modules = ref([Pagination, Navigation])
 
+ // 返回上一页
+ const Test = () => {
+    router.push("")
+  }
 </script>
 
 <style scoped>

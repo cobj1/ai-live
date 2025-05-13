@@ -27,8 +27,8 @@ onMounted(async () => {
       accountsStore.authorities = []
 
       authorizationStore.token = ''
-
-      router.push('/login')
+     
+       router.push('/login')
     }
   } else {
     accountsStore.account = null
@@ -36,7 +36,7 @@ onMounted(async () => {
 
     authorizationStore.token = ''
 
-    router.push('/login')
+   router.push('/login')
   }
 }) 
 </script>
