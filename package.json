@@ -26,7 +26,7 @@
     "pinia-plugin-persistedstate": "^4.2.0",
     "reka-ui": "^2.1.1",
     "roboto-fontface": "*",
-    "spacegt": "^0.1.26",
+    "spacegt": "^0.1.31",
     "swiper": "^11.2.6",
     "uuid": "^11.1.0",
     "vue": "^3.4.31",

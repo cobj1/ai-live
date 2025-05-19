@@ -213,6 +213,7 @@ class ApiService {
     page?: number;
     size?: number;
     name?: string
+   
 
   }): Promise<PaginatedResponse<Course>> {
     try {
@@ -249,7 +250,8 @@ class ApiService {
     categories?: string[]
     page?: number;
     size?: number;
-    name?: string
+    name?: string;
+   
 
   }): Promise<PaginatedResponse<Course>> {
     try {

@@ -4,7 +4,7 @@ export const ChapterApi = {
   list(courseid: string) {
     return axios({
       url: `/api/chapter/list/${courseid}`,
-      method: "post",
+      method: "get",
     });
   },
   info(chapterid: string) {

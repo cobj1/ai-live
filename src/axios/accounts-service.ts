@@ -1,6 +1,6 @@
-import { useAuthorizationStore } from "@/stores/authorization";
 import { snackbar } from "@/stores/snackbar";
 import axios from "axios";
+import spacegt from "spacegt";
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_ACCOUNTS_SERVICE,
@@ -9,7 +9,7 @@ const service = axios.create({
 
 service.interceptors.request.use(
   (config) => {
-    const authorizationStore = useAuthorizationStore();
+    const authorizationStore = spacegt.stores.useAuthorizationStore();
     config.headers[authorizationStore.head] = authorizationStore.getFullToken;
     return config;
   },

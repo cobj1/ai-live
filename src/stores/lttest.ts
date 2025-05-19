@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
+import spacegt from "spacegt";
 import { computed, ref } from "vue";
-import { matchAuthorities, useAccountsStore } from "./data/accounts";
 
-export const useManageStore = defineStore("lttest", () => {
-    const accountStore = useAccountsStore();
+export const useManageStore = defineStore(
+  "lttest",
+  () => {
+    const accountStore = spacegt.stores.useAccountsStore();
 
     const defaultItems = ref([
       {
@@ -23,12 +25,11 @@ export const useManageStore = defineStore("lttest", () => {
         color: "primary",
         hasAuthority: ["ORGS_LIST"],
       },
-     
     ]);
 
     const defaultItemsDynamic = computed(() => {
       return defaultItems.value.filter((item) => {
-        return matchAuthorities(accountStore.authorities, item.hasAuthority);
+        return accountStore.matchAuthorities(accountStore.authorities, item.hasAuthority);
       });
     });
 

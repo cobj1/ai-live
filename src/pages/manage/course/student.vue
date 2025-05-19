@@ -239,7 +239,7 @@ const viewCourseDetails = (course: Course) => {
 <style scoped>
 /* 新增右侧容器样式 */
 .right-filter-container {
-  margin-top: -80px;
+  margin-top: 0px;
   /* 上移调整 */
 
 }

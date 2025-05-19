@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
+import spacegt from "spacegt";
 import { computed, ref } from "vue";
-import { matchAuthorities, useAccountsStore } from "./data/accounts";
 
 export const useNavigationStore = defineStore(
   "navigationcourse",
   () => {
-    const accountStore = useAccountsStore();
+    const accountStore = spacegt.stores.useAccountsStore();
 
     const defaultItems = ref([
       {
@@ -16,7 +16,7 @@ export const useNavigationStore = defineStore(
         link: true,
         color: "primary",
       },
-     
+
       {
         type: "VListItem",
         prependIcon: "mdi-account-multiple-outline",
@@ -27,7 +27,7 @@ export const useNavigationStore = defineStore(
         color: "primary",
         hasAuthority: ["USERS_MANAGE_USER"],
       },
-     
+
       {
         type: "VListGroup",
         fluid: true,
@@ -72,7 +72,10 @@ export const useNavigationStore = defineStore(
 
     const defaultItemsDynamic = computed(() => {
       return defaultItems.value.filter((item) => {
-        return matchAuthorities(accountStore.authorities, item.hasAuthority);
+        return accountStore.matchAuthorities(
+          accountStore.authorities,
+          item.hasAuthority
+        );
       });
     });
 

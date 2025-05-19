@@ -12,6 +12,7 @@ declare module 'vue' {
     AlertTitle: typeof import('./src/components/ui/alert/AlertTitle.vue')['default']
     AuroraBackground: typeof import('./src/components/ui/aurora-background/AuroraBackground.vue')['default']
     Button: typeof import('./src/components/ui/button/Button.vue')['default']
+    ChapterAdd: typeof import('./src/components/course/ChapterAdd.vue')['default']
     CourseCard: typeof import('./src/components/course/CourseCard.vue')['default']
     CourseList: typeof import('./src/components/course/CourseList.vue')['default']
     FilterSection: typeof import('./src/components/course/FilterSection.vue')['default']

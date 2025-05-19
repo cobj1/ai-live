@@ -1,48 +1,48 @@
 <template>
-  <div class="video-container">
-    <video autoplay muted loop playsinline class="background-video">
-      <source src="/video/首页视频.mp4" type="video/mp4">
-    </video>
+  <v-theme-provider theme="dark">
 
-    <div class="content-layer">
-      <div class="right-section">
-        <v-card class="login-form">
+    <div class="video-container">
+      <video autoplay muted loop playsinline class="background-video">
+        <source src="/video/首页视频.mp4" type="video/mp4">
+      </video>
 
-          <v-theme-provider theme="dark">
+      <div class="content-layer">
+        <div class="right-section">
+          <v-card class="login-form">
+
             <spacegt-login :proxy="proxy" locale="zhHans" @login="onLogin"> </spacegt-login>
-          </v-theme-provider>
 
-          <div class="qrcode-group">
-            <div class="qrcode-item">
-              <a href="#" target="_blank">
-                <img src="/image/gz.jpg" alt="易格云仿真" width="150" height="150">
-              </a>
+            <div class="qrcode-group">
+              <div class="qrcode-item">
+                <a href="#" target="_blank">
+                  <img src="/image/gz.jpg" alt="易格云仿真" width="150" height="150">
+                </a>
+              </div>
+              <div class="qrcode-item">
+                <a href="#" target="_blank" class="image-link">
+                  <img src="/image/sz.jpg" alt="墨影AI数字人" width="150" height="150">
+                </a>
+              </div>
             </div>
-            <div class="qrcode-item">
-              <a href="#" target="_blank" class="image-link">
-                <img src="/image/sz.jpg" alt="墨影AI数字人" width="150" height="150">
-              </a>
-            </div>
-          </div>
-        </v-card>
+          </v-card>
+        </div>
+
+        <footer class="transparent-footer">
+          <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer" target="_blank">
+            京ICP备14018031号-1@2018-2025 北京易格通智仿真技术有限公司</a>
+        </footer>
       </div>
-
-      <footer class="transparent-footer">
-        <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer" target="_blank">
-          京ICP备14018031号-1@2018-2025 北京易格通智仿真技术有限公司</a>
-      </footer>
     </div>
-  </div>
+  </v-theme-provider>
 </template>
 
 <script setup>
 import { snackbar } from '@/stores/snackbar';
 import { useRouter } from 'vue-router';
-import { useAuthorizationStore } from '@/stores/authorization'
-import { useAccountsStore } from '@/stores/data/accounts'
+import spacegt from 'spacegt';
 
-const authorizationStore = useAuthorizationStore()
-const accountsStore = useAccountsStore()
+const authorizationStore = spacegt.stores.useAuthorizationStore()
+const accountsStore = spacegt.stores.useAccountsStore()
 const router = useRouter()
 
 const proxy = import.meta.env.VITE_APP_ACCOUNTS_SERVICE
@@ -67,6 +67,7 @@ const onLogin = (data) => {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
+  background-color: #121212;
 }
 
 .background-video {
@@ -101,7 +102,6 @@ const onLogin = (data) => {
 }
 
 .login-form {
-  color: #ffffff;
   width: 530px;
   background-color: transparent;
   backdrop-filter: blur(8px);

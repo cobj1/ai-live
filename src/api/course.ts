@@ -29,20 +29,57 @@ export const courseApi = {
   getAllCourseTypesByClassfyId(params : {
     types ?: string[];
     categories ?: string[];
+    state ?: number | null,
     page ?: number;
     size ?: number;
     name ?: string;
+
   }) {
+
     return axios({
       url: "/api/course/search_byinfo",
       method: "get",
       params: {
-        type: params.types,
-        classify: params.categories,
+
+        type: params.types?.join(',') || "",
+        classify: params.categories?.join(',') || "",
         name: params.name,
         pageNum: params.page,
         pageSize: params.size,
+        state: params.state
       },
+    });
+  },
+  //通过学生权限查所有课程
+  getAllCourseTypesByClassfyStuId(params : {
+    types ?: string[];
+    categories ?: string[];
+    state ?: number | null,
+    page ?: number;
+    size ?: number;
+    name ?: string;
+
+  }) {
+
+    return axios({
+      url: "/api/course/search_self",
+      method: "get",
+      params: {
+
+        type: params.types?.join(',') || "",
+        classify: params.categories?.join(',') || "",
+        name: params.name,
+        pageNum: params.page,
+        pageSize: params.size,
+        state: params.state
+      },
+    });
+  },
+  //通过课程码添加课程
+  addCourseById(course_code : string) {
+    return axios({
+      url: `/api/course_user/add/${course_code}`,
+      method: "get",
     });
   },
   info(courseid : string) {
@@ -57,7 +94,7 @@ export const courseApi = {
       method: "post",
     });
   },
-  save(data: object) {
+  save(data : object) {
     return axios({
       url: "/api/course/save",
       method: "post",

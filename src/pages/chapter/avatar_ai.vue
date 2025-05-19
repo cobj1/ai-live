@@ -42,11 +42,11 @@
 <script setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useWebSocket } from '@vueuse/core'
-import { useAuthorizationStore } from '@/stores/authorization';
 import { App } from 'ant-design-vue';
 import { Sender } from 'ant-design-x-vue';
 import { useRoute } from 'vue-router'
 import { useLoadingStore } from '@/stores/loading';
+import spacegt from 'spacegt';
 
 const emit = defineEmits(['loadImg'])
 
@@ -54,7 +54,7 @@ const loadingStore = useLoadingStore()
 
 const route = useRoute()
 
-const authorizationStore = useAuthorizationStore()
+const authorizationStore = spacegt.stores.useAuthorizationStore()
 
 const webSocket = ref({})
 

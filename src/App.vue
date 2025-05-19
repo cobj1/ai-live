@@ -8,14 +8,13 @@
 
 <script setup>
 import 'spacegt/dist/style.css'
-import { useAuthorizationStore } from '@/stores/authorization'
 import { TokenApi } from '@/api/accounts/token'
-import { onMounted, nextTick } from 'vue'
-import { useAccountsStore } from '@/stores/data/accounts'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import spacegt from 'spacegt'
 
-const authorizationStore = useAuthorizationStore()
-const accountsStore = useAccountsStore()
+const authorizationStore = spacegt.stores.useAuthorizationStore()
+const accountsStore = spacegt.stores.useAccountsStore()
 const router = useRouter()
 
 onMounted(async () => {
@@ -27,8 +26,8 @@ onMounted(async () => {
       accountsStore.authorities = []
 
       authorizationStore.token = ''
-     
-       router.push('/login')
+
+      router.push('/login')
     }
   } else {
     accountsStore.account = null
@@ -36,7 +35,7 @@ onMounted(async () => {
 
     authorizationStore.token = ''
 
-   router.push('/login')
+    router.push('/login')
   }
 }) 
 </script>

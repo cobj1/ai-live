@@ -45,7 +45,9 @@
           <span v-else class="status-rejected">未通过</span>
         </template>
         <template v-slot:item.actions="{ item }">
-          <VBtn prepend-icon="mdi-pencil" :color="'purple-accent-3'" variant="text" text="章节管理" @click="editItem(item)">
+          <VBtn prepend-icon="mdi-pencil" :color="'purple-accent-3'" variant="text">
+            章节管理
+            <ChapterAdd :course-id="item.id"/>
           </VBtn>
           <VBtn prepend-icon="mdi-check-circle" :color="'yellow-darken-4'" v-if="item.isPublished===0" variant="text"
             text="已发布"></VBtn>
@@ -161,11 +163,13 @@
   const loading = ref(false)
   const loadingEdit = ref(false)
   const dialogDelete = ref(false)
+  const dialogChapter = ref(false)
   const dialog = ref(false)
   const editedIndex = ref(-1)
   const types = ref<string[]>([])
   const classify = ref<string[]>([])
   const coverFile = ref(null)
+  const currentChapter = ref(null)
 
   const options = ref({
     page: 1,
@@ -233,9 +237,12 @@
   const defaultItem = ref<Partial<CourseItem>>()
 
   const editItem = async (item) => {
+    const itemCopy = { ...item }
+    delete itemCopy.createTime
     if (item) {
-      editedIndex.value = serverItems.value.indexOf(item)
-      editedItem.value = Object.assign({}, item)
+      console.log(item);
+      editedIndex.value = serverItems.value.indexOf(itemCopy)
+      editedItem.value = Object.assign({}, itemCopy)
       editedItem.value.urlOld = editedItem.value.url
       editedItem.value.inputType = 'file'
     } else {
@@ -256,7 +263,6 @@
     dialogDelete.value = false;
   }
 
-
   const save = async () => {
     loadingEdit.value = true
     try {
@@ -274,7 +280,6 @@
     }
     loadingEdit.value = false
   }
-
 
   const loadItems = async ({
     page,
@@ -297,7 +302,7 @@
         index: (page - 1) * 10 + index + 1,
       }
     })
-    console.log(serverItems.value);
+    /* console.log(serverItems.value); */
     totalItems.value = res.total
     loading.value = false
   }
@@ -319,4 +324,5 @@
   .status-rejected {
     color: red;
   }
+
 </style>
