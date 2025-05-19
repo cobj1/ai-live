@@ -41,7 +41,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-defineProps({
+const props = defineProps({
     item: Object
 })
 
@@ -52,7 +52,7 @@ const loading = ref(false)
 const reserve = () => {
     loading.value = true
 
-    setTimeout(() => router.push('/live/1'), 500)
+    setTimeout(() => router.push(`/chapter/${props.item.id}`), 500)
 }
 
 

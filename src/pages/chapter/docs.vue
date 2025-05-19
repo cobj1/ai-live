@@ -1,6 +1,7 @@
 <template>
     <v-card class="rounded-lg" min-width="400px" max-width="1280px">
-        <swiper :slidesPerView="1" :pagination="pagination" :modules="modules" @swiper="onSwiper">
+        <swiper :slidesPerView="1" :pagination="pagination" :modules="modules" @swiper="onSwiper"
+            @slideChange="onSlideChange">
             <swiper-slide v-for="item in data">
                 <v-img :src="item" max-height="600px"></v-img>
             </swiper-slide>
@@ -18,11 +19,14 @@ import 'swiper/css/pagination';
 
 // import required modules
 import { Pagination } from 'swiper/modules';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
-    data: Array
+    data: Array,
+    current: Number
 })
+
+const emit = defineEmits(['change'])
 
 const modules = [Pagination]
 
@@ -36,6 +40,16 @@ const instance = ref()
 const onSwiper = (swiper) => {
     instance.value = swiper
 }
+
+const onSlideChange = (swiper) => {
+    emit('change', swiper.activeIndex)
+}
+
+watch(() => props.current, () => {
+    if (props.current != null && instance.value != null) {
+        instance.value.slideTo(props.current)
+    }
+})
 
 defineExpose({
     instance

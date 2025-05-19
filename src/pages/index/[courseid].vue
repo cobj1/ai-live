@@ -1,5 +1,13 @@
 <template>
-  <AuroraBackground>
+  <v-app-bar :elevation="2">
+    <template v-slot:prepend>
+      <v-btn icon="mdi-arrow-left" class="ml-2" @click="router.back()"></v-btn>
+    </template>
+
+    <v-app-bar-title>{{ course.name }}</v-app-bar-title>
+  </v-app-bar>
+
+  <AuroraBackground v-if="course && items.length > 0">
     <Motion as="div" :initial="{ opacity: 0, y: 40, filter: 'blur(10px)' }" :while-in-view="{
       opacity: 1,
       y: 0,
@@ -24,6 +32,19 @@
       </swiper-slide>
     </swiper>
   </AuroraBackground>
+
+  <v-empty-state v-else image="https://cdn.vuetifyjs.com/docs/images/components/v-empty-state/teamwork.png">
+    <template v-slot:title>
+      <div class="text-subtitle-2 mt-8">
+        没有相应的课程内容
+      </div>
+    </template>
+
+    <template v-slot:actions>
+      <v-btn class="text-none" prepend-icon="mdi-arrow-left" elevation="1" rounded="lg" size="small" text="back"
+        width="96" @click="router.back()"></v-btn>
+    </template>
+  </v-empty-state>
 </template>
 
 <script setup>
@@ -34,29 +55,27 @@ import 'swiper/css/navigation';
 import { Motion } from "motion-v";
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Navigation } from 'swiper/modules';
-import { onMounted, ref, reactive } from "vue";
+import { onMounted, ref } from "vue";
 import Card from './card.vue'
 
-import axios from '@/axios/live-service'
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { courseApi } from '@/api/course';
+import { ChapterApi } from '@/api/chapter';
 
 const modules = ref([Pagination, Navigation])
 
 const route = useRoute()
+
+const router = useRouter()
 
 const course = ref({})
 
 const items = ref([])
 
 const load = async () => {
-  course.value = await axios({
-    url: `http://192.168.124.124:12001/api/course/search/${route.params.courseid}`
-  })
+  course.value = await courseApi.info(route.params.courseid)
 
-  items.value = await axios({
-    url: `http://192.168.124.124:12001/api/chapter/list/${route.params.courseid}`,
-    method: 'post'
-  })
+  items.value = await ChapterApi.list(route.params.courseid)
 }
 onMounted(() => {
   load()

@@ -14,7 +14,7 @@
           <v-list-item prepend-icon="mdi-account-group-outline" title="课程列表" value="users"></v-list-item>
         </v-list> -->
         <v-list density="compact" nav>
-          <template v-for="item in manageStore.defaultItems" :key="item.title">
+          <template v-for="item in courseStore.defaultItems" :key="item.title">
             <!-- 普通菜单项 -->
             <v-list-item v-if="item.type === 'VListItem'" :to="item.to" :prepend-icon="item.icon">
               <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -43,32 +43,34 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ref
-  } from 'vue'
-  import {
-    useManageStore
-  } from '@/stores/manage';
-  import {
-    useRoute
-  } from 'vue-router'
+import {
+  ref
+} from 'vue'
+import {
+  useManageStore
+} from '@/stores/manage';
+import {
+  useRoute
+} from 'vue-router'
+import { useCourseStore } from '@/stores/courselt';
 
-  const manageStore = useManageStore();
-  const route = useRoute();
+const manageStore = useManageStore();
+const route = useRoute();
 
-  const drawer = ref(true)
-  const rail = ref(true)
+const courseStore = useCourseStore();
+const drawer = ref(true)
+const rail = ref(true)
 
 
-  const isActive = (path : string) => {
-    return route.path.startsWith(path) || route.matched.some(r => r.path === path);
-  };
+const isActive = (path: string) => {
+  return route.path.startsWith(path) || route.matched.some(r => r.path === path);
+};
 </script>
 
 <style>
-  .v-card {
-    position: absolute !important;
-    left: 0;
-    height: 100%;
-  }
+.v-card {
+  position: absolute !important;
+  left: 0;
+  height: 100%;
+}
 </style>

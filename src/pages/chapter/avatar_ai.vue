@@ -108,9 +108,9 @@ const general = () => {
 const prefabricated = () => {
     sendWait({
         event_type: 'content_offer',
-        course: route.params.id,
+        // course: route.params.id,
         // or
-        chapter: 1,
+        // chapter: 1,
     })
 }
 
@@ -234,7 +234,6 @@ onMounted(async () => {
             }
         }
     )
-
 
     await initialization()
 
