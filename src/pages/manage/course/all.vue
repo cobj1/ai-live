@@ -1,28 +1,46 @@
 <template>
-  <v-container>
-    <div >
-      <!-- 筛选组件 -->
-      <FilterSection :types="coursesTypes" :categories="coursesCategory" :search="search"
-        :selected-types="selectedCoursesTypes||[]" :selected-category="selectedCoursesCategory||[]"
-        @update:types="updateSelectedTypes" @update:category="updateSelectedCategory" @update:search="updateSearch" />
+  <v-container :max-width="$vuetify.display.width > 1900 ? '100%' : '1100px'">
+        <!-- 新增课程详情弹窗 -->
+    <CourseCardDetail 
+      v-model="dialogVisible"
+      :course="selectedCourse"
+      @course-added="handleCourseAdded"
+    />
+    <div fluid class=" px-20  ">
+      <div>
+        <!-- 筛选组件 -->
+        <FilterSection :types="coursesTypes" :categories="coursesCategory" :search="search"
+          :selected-types="selectedCoursesTypes || []" :selected-category="selectedCoursesCategory || []"
+          @update:types="updateSelectedTypes" @update:category="updateSelectedCategory" @update:search="updateSearch" />
+      </div>
 
-      <!-- 课程列表 -->
-      <v-container fluid class="mt-4">
-        <v-row>
-          <template v-for="(course, index) in displayedCourses" :key="course.id || index">
-            <v-col :cols="12" :sm="6" :md="4" :lg="3" >
-              <CourseCard v-if="course" :course="course" @view-details="viewCourseDetails" />
-                
-            </v-col>
-          </template>
-        </v-row>
-      </v-container>
-      <!-- 分页 -->
-      <v-footer>
-        <v-pagination v-model="currentPage" :length="totalPages" :total-visible="100" @update:model-value="handlePageChange"
-         color="primary" class="mt-4" />
-        
-      </v-footer>
+      <div>
+        <!-- 课程列表 -->
+        <v-container max-width="100%">
+          <v-row :gap="0">
+            <template v-for="(course, index) in displayedCourses" :key="course.id || index">
+              <!-- 超小屏幕（xs）每行1个 -->
+              <!-- 小屏幕（sm）每行2个 -->
+              <!-- 中等屏幕（md）每行4个 -->
+              <!-- 大屏幕（lg）每行6个 -->
+              <v-col cols="12" sm="6" md="4" :lg="$vuetify.display.width > 1900 ? 2 : 3" class="mb-0">
+                <CourseCard v-if="course" :course="course" @view-details="viewCourseDetails" />
+              </v-col>
+            </template>
+          </v-row>
+        </v-container>
+      </div>
+  
+      <div>
+        <!-- 分页 --> <!-- 动态计算显示页码数  -->
+        <v-footer>
+          <v-pagination v-model="currentPage" :length="totalPages" :total-visible="100"
+            @update:model-value="handlePageChange" color="primary" class="mt-4" />
+
+        </v-footer>
+
+      </div>
+
 
       <!-- <div v-if="loading" class="loading-overlay">
         <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -43,14 +61,14 @@ import {
   type CourseType,
   type PaginatedResponse
 } from '@/types/course'
-import router from '@/router'
+
 
 // 状态管理
 const selectedCoursesTypes = ref<string[]>([])
 const selectedCoursesCategory = ref<string[]>([])
 const search = ref<string>('')
 const currentPage = ref(1)
-const pageSize = 8
+const pageSize = 12
 const loading = ref(false)
 
 // 数据源
@@ -69,7 +87,7 @@ const coursesInfos = ref<PaginatedResponse<Course>>({
 
 
 // 计算属性
-const displayedCourses = computed(() =>{
+const displayedCourses = computed(() => {
   return coursesInfos.value.records || [];
 }
 )
@@ -80,6 +98,7 @@ const handlePageChange = (newPage: number) => {
   currentPage.value = newPage;
   fetchCourses()
 }
+
 
 // 修改分页总数计算逻辑
 const totalPages = computed(() =>
@@ -119,7 +138,7 @@ const fetchCourseTypes = async () => {
   try {
     const response = await courseService.fetchAllCourseTypes()
     coursesTypes.value = response
-   
+
   } catch (error) {
     console.error('获取课程类型失败:', error)
   }
@@ -129,7 +148,7 @@ const fetchCourseCategories = async () => {
   try {
     const response = await courseService.fetchAllCourseCategory()
     coursesCategory.value = response
-    
+
   } catch (error) {
     console.error('获取课程分类失败:', error)
   }
@@ -150,13 +169,14 @@ const fetchCourses = async () => {
 }
 // 生命周期
 onMounted(async () => {
+  
   await Promise.all([
     fetchCourseTypes(),
     fetchCourseCategories(),
     fetchCourses(),
-    
+
   ])
-   
+
 })
 
 // 新增防抖函数和变量
@@ -195,31 +215,60 @@ onUnmounted(() => {
 });
 
 // 添加辅助函数
-const arraysEqual = (a: string[],b: string[]) => {
+const arraysEqual = (a: string[], b: string[]) => {
   if (a === b) return true;
   if (a.length !== b.length) return false;
   return a.every((val, index) => val === b[index]);
 };
 
-
+// 新增状态管理
+const dialogVisible = ref(false)
+const selectedCourse = ref<Course | null>(null)
 const viewCourseDetails = (course: Course) => {
-  router.push(`/${course.id}`)
+  // router.push(`/${course.id}`)
+  console.log("查看详情",course);
+    selectedCourse.value = course
+  dialogVisible.value = true
 }
+
+const handleCourseAdded = () => {
+  fetchCourses();  // 刷新课程列表
+  // 可以添加其他逻辑，例如提示添加成功
+  console.log('课程添加成功，已刷新列表');
+};
 </script>
 
 <style scoped>
+/* 保证弹窗在滚动时位置固定 */
+.v-dialog {
+  position: fixed;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+}
+
 .v-pagination {
   z-index: 1;
 }
+
 .v-footer {
   position: fixed;
   bottom: 0;
-  left: 0;          /* 新增 */
-  right: 0;         /* 新增 */
+  left: 0;
+  /* 新增 */
+  right: 0;
+  /* 新增 */
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 16px;  /* 添加左右内边距防止溢出 */
+  padding: 0 16px;
+  /* 添加左右内边距防止溢出 */
   box-sizing: border-box;
 }
 </style>

@@ -1,48 +1,42 @@
 <template>
-  <v-container>
-    <div >
-      <!-- 筛选组件 -->
-      <FilterSection :types="coursesTypes" :categories="coursesCategory" :search="search"
-        :selected-types="selectedCoursesTypes || []" :selected-category="selectedCoursesCategory || []"
-        @update:types="updateSelectedTypes" @update:category="updateSelectedCategory" @update:search="updateSearch" />
-      <v-row>
-        <v-col cols="10">
-        </v-col>
-        <v-col cols="2">
-          <div class="right-filter-container">
-            <div class="d-flex align-center gap-3 w-64 justify-end">
-              <v-col cols="11">
-                <v-text-field v-model="inputCourse_code" label="输入课程码" variant="outlined" hide-details single-line
-                  class="me-1" />
+  <v-container :max-width="$vuetify.display.width > 1900 ? '100%' : '1100px'">
+    <div fluid class=" px-20  ">
+      <div>
+        <!-- 筛选组件 -->
+        <FilterSection :types="coursesTypes" :categories="coursesCategory" :search="search"
+          :selected-types="selectedCoursesTypes || []" :selected-category="selectedCoursesCategory || []"
+          @update:types="updateSelectedTypes" @update:category="updateSelectedCategory" @update:search="updateSearch" />
+      </div>
+
+      <div>
+        <!-- 课程列表 -->
+        <v-container max-width="100%">
+          <v-row :gap="0">
+            <template v-for="(course, index) in displayedCourses" :key="course.id || index">
+              <!-- 超小屏幕（xs）每行1个 -->
+              <!-- 小屏幕（sm）每行2个 -->
+              <!-- 中等屏幕（md）每行4个 -->
+              <!-- 大屏幕（lg）每行6个 -->
+              <v-col cols="12" sm="6" md="4" :lg="$vuetify.display.width > 1900 ? 2 : 3" class="mb-0">
+                <CourseCardStu v-if="course" :course="course" @view-details="viewCourseDetails" />
               </v-col>
-              <v-col cols="1">
-                <v-btn color="primary" @click="addCourse" class="align-self-center">
-                  添加 </v-btn>
-              </v-col>
-            </div>
-          </div>
+            </template>
+          </v-row>
+        </v-container>
+      </div>
 
-        </v-col>
-      </v-row>
+      <div>
+        <!-- 分页 --> <!-- 动态计算显示页码数  -->
+        <v-footer>
+          <v-pagination v-model="currentPage" :length="totalPages" :total-visible="100"
+            @update:model-value="handlePageChange" color="primary" class="mt-4" />
+
+        </v-footer>
+
+      </div>
 
 
-      <!-- 课程列表 -->
-      <v-container fluid class="mt-4">
-        <v-row>
-          <template v-for="(course, index) in displayedCourses" :key="course.id || index">
-            <v-col :cols="12" :sm="6" :md="4" :lg="3">
-              <CourseCard :course="course" @view-details="viewCourseDetails" />
-            </v-col>
-          </template>
-        </v-row>
-      </v-container>
-      <!-- 分页 -->
-      <v-footer>
-        <v-pagination v-model="currentPage" :length="totalPages" :total-visible="100" @update="handlePageChange"
-          @page-count="totalPages = $event" color="primary" class="mt-4" />
-      </v-footer>
-
-      <!-- <div v-if="loading" >
+      <!-- <div v-if="loading" class="loading-overlay">
         <v-progress-circular indeterminate color="primary"></v-progress-circular>
       </div> -->
     </div>
@@ -62,18 +56,17 @@ import {
   type PaginatedResponse
 } from '@/types/course'
 import router from '@/router'
+import { useDisplay } from 'vuetify'
 
 // 状态管理
 const selectedCoursesTypes = ref<string[]>([])
 const selectedCoursesCategory = ref<string[]>([])
 const search = ref<string>('')
 const currentPage = ref(1)
-const pageSize = 8
+const pageSize = 12
 const loading = ref(false)
-const isSubmitting = ref(false);
-const inputCourse_code = ref<string>('')
 
-
+const display = useDisplay();
 // 数据源
 const coursesTypes = ref<CourseType[]>([])
 const coursesCategory = ref<CourseCategory[]>([])
@@ -87,32 +80,36 @@ const coursesInfos = ref<PaginatedResponse<Course>>({
 
 
 
-const fetchCourses = async () => {
-  try {
-    if (currentPage.value < 1) currentPage.value = 1 // 保证页码最小为1
-    loading.value = true
-    const params = buildQueryParams()
-    const response = await courseService.getFilteredCoursesByUser(params)
-    coursesInfos.value = response
-  } catch (error) {
-    console.error('获取课程失败:', error)
-    // 这里可以添加错误提示
-  } finally {
-    loading.value = false
-  }
-}
+
 
 // 计算属性
-const displayedCourses = computed(() =>
-  coursesInfos.value.records?.slice((currentPage.value - 1) * pageSize, currentPage.value * pageSize) || []
+const displayedCourses = computed(() => {
+  return coursesInfos.value.records || [];
+}
 )
 
 // 新增分页处理方法
 const handlePageChange = (newPage: number) => {
-  currentPage.value = newPage
-  console.log("页码", currentPage.value)
+  console.log("切换页码:", newPage); // 调试日志
+  currentPage.value = newPage;
   fetchCourses()
 }
+// 带类型的计算属性
+const computedVisiblePages = computed((): number => {
+  switch (display.name.value) {
+    case 'lg':
+    case 'xl':
+      return 12;  // ≥1280px
+    case 'md':
+      return 8;   // ≥960px
+    case 'sm':
+      return 4;   // ≥600px
+    case 'xs':
+      return 2;   // <600px
+    default:
+      return 5;   // 类型安全兜底
+  }
+});
 
 // 修改分页总数计算逻辑
 const totalPages = computed(() =>
@@ -167,17 +164,21 @@ const fetchCourseCategories = async () => {
     console.error('获取课程分类失败:', error)
   }
 }
-//课程码添加课程
-async function addCourse() {
+const fetchCourses = async () => {
   try {
-    const result = await courseService.fetchAddCourseById(inputCourse_code.value);
-
+    if (currentPage.value < 1) currentPage.value = 1 // 保证页码最小为1
+    loading.value = true
+    const params = buildQueryParams()
+    const response = await courseService.getFilteredCoursesByUser(params)
+    coursesInfos.value = response
   } catch (error) {
-    console.log('添加失败:');
+    console.error('获取课程失败:', error)
+    // 这里可以添加错误提示
+  } finally {
+    loading.value = false
   }
-  fetchCourses()
 }
-// 生命周期
+//生命周期
 onMounted(async () => {
   await Promise.all([
     fetchCourseTypes(),
@@ -237,27 +238,14 @@ const viewCourseDetails = (course: Course) => {
 </script>
 
 <style scoped>
-/* 新增右侧容器样式 */
-.right-filter-container {
-  margin-top: 0px;
-  /* 上移调整 */
-
+.content {
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
 }
 
-/* 右侧对齐容器 */
-.justify-end {
-  margin-left: auto;
-  /* 关键：将容器推到右侧 */
-}
-
-/* 操作区域固定宽度 */
-.w-64 {
-  width: 200px;
-}
-
-/* 输入框禁止换行 */
-.flex-grow-0 {
-  flex-grow: 0 !important;
+.v-pagination {
+  z-index: 1;
 }
 
 .v-footer {

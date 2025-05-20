@@ -23,8 +23,8 @@
             <!-- 分组菜单项 -->
             <v-list-group v-if="item.type === 'VListGroup'">
               <template #activator="{ props }">
-                <v-list-item v-bind="props" :prepend-icon="item.activator.icon"
-                  :title="item.activator.title"></v-list-item>
+                <v-list-item v-bind="props" :prepend-icon="item.activator?.icon"
+                  :title="item.activator?.title"></v-list-item>
               </template>
 
               <!-- 子菜单项 -->

@@ -1,47 +1,64 @@
 import { courseApi } from "@/api/course"
 
 export interface CourseDetail {
-    id: string
-    courseName: string
-    courseIntroduction: string
-    teacher: string
-    major: string
-    credit: number
-    courseIcon: string
-    syllabus: string
+  id: string
+  courseName: string
+  courseIntroduction: string
+  teacher: string
+  major: string
+  credit: number
+  courseIcon: string
+  syllabus: string
 
 }
 
 
 export interface CourseType {
-    id: number;
-    name: string;
-    deleted: string;
+  id: number;
+  name: string;
+  deleted: string;
 }
 export interface CourseCategory {
-    id: number;
-    name: string;
-    parentId: number;
+  id: number;
+  name: string;
+  parentId: number;
 
- 
-  
+
+
+}
+export interface CourseTeacher {
+  id: string;
+  username: string;
+  nickname: string;
+  phone: string;
+  email: string;
+  avatar: string;
+  roles: string;
+  orgs: string;
+  authorities: string;
+  accountNonExpired: boolean; 
+  credentialsNonExpired: boolean;
+  accountNonLocked: boolean
+
+
 }
 
 export interface Course {
-    id: number;
-    uid: string;
-    name: string;
-    introduce: string;
-    thumbnail: string;
-    classifyId: string;
-    type: string;
-    isPublished: number;
-    state: number;
-    createTime: Date;
-courseCode:string;
-    teacher: string;
-    author: string;
-    major: string;
+  id: number;
+  uid: string;
+  name: string;
+  introduce: string;
+  thumbnail: string;
+  classifyId: string;
+  type: string;
+  isPublished: number;
+  state: number;
+  createTime: Date;
+  courseCode: string;
+
+   teacher: string;
+    author: string;// 或根据需求调整字段
+    major: string; // 假设major字段另有来源
     teacherIcon: string;
 };
 
@@ -58,7 +75,7 @@ interface CourseAddResponse {
   message: string;
   result: {
     course_id: string;
-    add_time: string;
+   
   };
 }
 
@@ -95,7 +112,7 @@ const transformers = {
       isPublished: item.isPublished ?? "",
       state: item.state ?? "",
       createTime: item.createTime ?? "",
-courseCode:item.courseCode??"",
+      courseCode: item.courseCode ?? "",
       teacher: item.teacher ?? "",
       author: item.author ?? "",
       major: item.major ?? "",
@@ -113,16 +130,18 @@ export const courseTransformers = {
     name: item.name ?? "",
     introduce: item.introduce ?? "",
     thumbnail: item.thumbnail ?? "",
-    classifyId: item.classifyId ?? "",
-    type: item.type ?? "",
-    isPublished: item.isPublished ?? "",
-    state: item.state ?? "",
+     // 数字类型字段使用0作为默认值
+    classifyId: item.classifyId ?? 0,
+    type: item.type ?? 0,
+    isPublished: item.isPublished ??0,
+    state: item.state ?? 0,
     createTime: item.createTime ?? "",
-courseCode:item.courseCode??"",
-    teacher: item.teacher ?? "",
-    author: item.author ?? "",
-    major: item.major ?? "",
-    teacherIcon: item.teacherIcon ?? "",
+    courseCode: item.courseCode ?? "",
+     // 从user对象中提取教师信息
+   teacher: item.user?.nickname ?? "",
+    author: item.user?.username ?? "", // 或根据需求调整字段
+    major: item.major ?? "", // 假设major字段另有来源
+    teacherIcon: item.user?.avatar ?? "",
   }),
 
   // 修改后的分页转换方法
@@ -213,7 +232,7 @@ class ApiService {
     page?: number;
     size?: number;
     name?: string
-   
+
 
   }): Promise<PaginatedResponse<Course>> {
     try {
@@ -243,7 +262,7 @@ class ApiService {
     }
   }
 
-   // 通过学生新增组合过滤方法
+  // 通过学生新增组合过滤方法
   async getFilteredCoursesByUser(params: {
 
     types?: string[]
@@ -251,7 +270,7 @@ class ApiService {
     page?: number;
     size?: number;
     name?: string;
-   
+
 
   }): Promise<PaginatedResponse<Course>> {
     try {
@@ -281,55 +300,67 @@ class ApiService {
     }
   }
 
-    // 通过课程码添加课程（增强版）
-async fetchAddCourseById(course_code: string){
-  try {
-    // 1. 参数校验
-    if (!course_code || typeof course_code !== 'string') {
-      throw new Error('课程码格式无效');
+  // 通过课程码添加课程（增强版）
+  async fetchAddCourseById(course_code: string) {
+    try {
+      // 1. 参数校验
+      if (!course_code || typeof course_code !== 'string') {
+        throw new Error('课程码格式无效');
+      }
+
+      // 2. 调用API
+      const response = await courseApi.addCourseById(course_code);
+      
+   
+     
+      // 3. 统一处理响应
+      // return this.handleResponse_per<CourseAddResponse>(response, (data) => {
+      //   if (!data.success) {
+      //     throw new Error(data.message || '添加课程失败');
+      //   }
+      //   return data;
+      // });
+      return response;
+
+
+
+    } catch (error) {
+      console.error('[课程添加失败]', error);
+
+
     }
-
-    // 2. 调用API
-    const response = await courseApi.addCourseById(course_code);
-    return response;
-  
-  } catch (error) {
-    console.error('[课程添加失败]', error);
-    
-  
   }
-}
 
 
-//   // 通过课程码添加课程（增强版）
-// async fetchAddCourseById(course_code: string): Promise<CourseAddResponse> {
-//   try {
-//     // 1. 参数校验
-//     if (!course_code || typeof course_code !== 'string') {
-//       throw new Error('课程码格式无效');
-//     }
+  //   // 通过课程码添加课程（增强版）
+  // async fetchAddCourseById(course_code: string): Promise<CourseAddResponse> {
+  //   try {
+  //     // 1. 参数校验
+  //     if (!course_code || typeof course_code !== 'string') {
+  //       throw new Error('课程码格式无效');
+  //     }
 
-//     // 2. 调用API
-//     const response = await courseApi.addCourseById(course_code);
-    
-//     // 3. 统一处理响应
-//     return this.handleResponse_per<CourseAddResponse>(response, (data) => {
-//       if (!data.success) {
-//         throw new Error(data.message || '添加课程失败');
-//       }
-//       return data.result;
-//     });
+  //     // 2. 调用API
+  //     const response = await courseApi.addCourseById(course_code);
 
-//   } catch (error) {
-//     console.error('[课程添加失败]', error);
-    
-//     // 结构化错误返回
-//     throw {
-//       success: false,
-//       error: error instanceof Error ? error.message : '未知错误'
-//     };
-//   }
-// }
+  //     // 3. 统一处理响应
+  //     return this.handleResponse_per<CourseAddResponse>(response, (data) => {
+  //       if (!data.success) {
+  //         throw new Error(data.message || '添加课程失败');
+  //       }
+  //       return data.result;
+  //     });
+
+  //   } catch (error) {
+  //     console.error('[课程添加失败]', error);
+
+  //     // 结构化错误返回
+  //     throw {
+  //       success: false,
+  //       error: error instanceof Error ? error.message : '未知错误'
+  //     };
+  //   }
+  // }
 
   // 统一响应处理
   private handleResponse<T>(
@@ -339,19 +370,19 @@ async fetchAddCourseById(course_code: string){
     const data = response.data ?? response;
     return Promise.resolve(transformer(data));
   }
- // 统一响应处理没有数组
+  // 统一响应处理没有数组
   private handleResponse_per<T>(
-  response: any,
-  transformer: (item: any) => T
-): Promise<T> {
-  const data = response.data ?? response;
-  
-  if (!data.success) {
-    throw new Error(data.message || '请求失败');
+    response: any,
+    transformer: (item: any) => T
+  ): Promise<T> {
+    const data = response.data ?? response;
+
+    if (!data.success) {
+      throw new Error(data.message || '请求失败');
+    }
+
+    return Promise.resolve(transformer(data));
   }
-  
-  return Promise.resolve(transformer(data));
-}
 }
 
 

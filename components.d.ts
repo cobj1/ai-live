@@ -14,6 +14,8 @@ declare module 'vue' {
     Button: typeof import('./src/components/ui/button/Button.vue')['default']
     ChapterAdd: typeof import('./src/components/course/ChapterAdd.vue')['default']
     CourseCard: typeof import('./src/components/course/CourseCard.vue')['default']
+    CourseCardDetail: typeof import('./src/components/course/CourseCardDetail.vue')['default']
+    CourseCardStu: typeof import('./src/components/course/CourseCardStu.vue')['default']
     CourseList: typeof import('./src/components/course/CourseList.vue')['default']
     FilterSection: typeof import('./src/components/course/FilterSection.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']

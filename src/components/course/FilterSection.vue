@@ -1,45 +1,36 @@
 <template>
-    <div>
-        <v-row>
-            <v-col cols="10">
-                <div class="left-filters">
-                    <div class="filter-group">
-                        <label class="filter-label">课程类型：</label>
-                        <v-btn-toggle v-model="localSelectedTypes" color="deep-purple-accent-3" rounded="0" group
-                            multiple class="custom-btn-group" @update:modelValue="handleTypeChange">
-                            <v-btn v-for="(type, index) in types" :key="index" :value="String(type.id)">
-                                {{ type.name }}
-                            </v-btn>
-                        </v-btn-toggle>
-                    </div>
+    <div class=" px-5 ">
+        <div class="search-wrapper">
+            <div class="search-container">
+                <v-text-field v-model="localSearch" label="按课程名搜索" prepend-inner-icon="mdi-magnify" variant="outlined"
+                    hide-details single-line @keyup.enter="handleSearch" class="flex-grow-0" />
+                <v-btn color="primary" @click="clesrSearch" class="align-self-center">
+                    清空
+                </v-btn>
+            </div>
+        </div>
+        <div class="left-filters">
+            <div class="filter-group">
+                <label class="filter-label">课程类型：</label>
+                <v-btn-toggle v-model="localSelectedTypes" rounded="0" group multiple class="custom-btn-group"
+                    @update:modelValue="handleTypeChange">
+                    <v-btn v-for="(type, index) in types" :key="index" :value="String(type.id)">
+                        {{ type.name }}
+                    </v-btn>
+                </v-btn-toggle>
+            </div>
 
-                    <div class="filter-group">
-                        <label class="filter-label">课程分类：</label>
-                        <v-btn-toggle v-model="localSelectedCategory" color="deep-purple-accent-3" rounded="0" group
-                            multiple class="custom-btn-group" @update:modelValue="handleCategoryChange">
-                            <v-btn v-for="(category, index) in categories" :key="index" :value="String(category.id)">
-                                {{ category.name }}
-                            </v-btn>
-                        </v-btn-toggle>
-                    </div>
-                </div>
-            </v-col>
-            <v-col cols="2">
-                <div class="d-flex align-center gap-3 w-64 justify-end">
-                    <v-col cols="11">
-                        <v-text-field v-model="localSearch" label="按课程名搜索" prepend-inner-icon="mdi-magnify"
-                            variant="outlined" hide-details single-line @keyup.enter="handleSearch"  class="flex-grow-0" 
-                             />
-                    </v-col>
-                    <v-col cols="1">
-                        <v-btn color="primary" @click="clesrSearch" class="align-self-center">
-                            清空
-                        </v-btn>
-                    </v-col>
-                </div>
-               
-            </v-col>
-        </v-row>
+            <div class="filter-group">
+                <label class="filter-label">课程分类：</label>
+                <v-btn-toggle v-model="localSelectedCategory" rounded="0" group multiple class="custom-btn-group"
+                    @update:modelValue="handleCategoryChange">
+                    <v-btn v-for="(category, index) in categories" :key="index" :value="String(category.id)">
+                        {{ category.name }}
+                    </v-btn>
+                </v-btn-toggle>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -139,6 +130,9 @@ onUnmounted(() => {
     /* 保持最小高度 */
     overflow-x: auto;
     /* 横向溢出时滚动 */
+
+    gap: 5px;
+    /* 统一控制按钮间距 */
 }
 
 .custom-btn-group .v-btn {
@@ -155,10 +149,13 @@ onUnmounted(() => {
     display: flex;
     flex: 1;
     /* 占据剩余空间 */
-    gap: 16px;
+    gap: 8px;
     /* 左侧两个filter-group间距 */
     flex-wrap: wrap;
     /* 允许换行 */
+    align-items: flex-start;
+
+
 }
 
 .right-filter {
@@ -166,18 +163,42 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
 }
+
 /* 右侧对齐容器 */
 .justify-end {
-  margin-left: auto; /* 关键：将容器推到右侧 */
+    margin-left: auto;
+    /* 关键：将容器推到右侧 */
 }
 
 /* 操作区域固定宽度 */
 .w-64 {
-  width: 200px;
+    width: 200px;
+}
+
+
+/* 外层包裹容器 */
+.search-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    /* 关键：整个搜索区域右对齐 */
+  
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
 }
 
 /* 输入框禁止换行 */
 .flex-grow-0 {
-  flex-grow: 0 !important;
+    width: 300px;
+    /* height: 50px; */
+    flex-grow: 0 !important;
+}
+.search-input {
+    flex: 1;
+
 }
 </style>

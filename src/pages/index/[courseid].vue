@@ -33,7 +33,7 @@
     </swiper>
   </AuroraBackground>
 
-  <v-empty-state v-else image="https://cdn.vuetifyjs.com/docs/images/components/v-empty-state/teamwork.png">
+  <v-empty-state v-else-if="!loading" image="https://cdn.vuetifyjs.com/docs/images/components/v-empty-state/teamwork.png">
     <template v-slot:title>
       <div class="text-subtitle-2 mt-8">
         没有相应的课程内容
@@ -72,11 +72,18 @@ const course = ref({})
 
 const items = ref([])
 
+const loading = ref(true)
+
 const load = async () => {
+  loading.value = true
+
   course.value = await courseApi.info(route.params.courseid)
 
   items.value = await ChapterApi.list(route.params.courseid)
+
+  loading.value = false
 }
+
 onMounted(() => {
   load()
 })

@@ -7,4 +7,14 @@ export const PPTApi = {
       method: "post",
     });
   },
+  save(data : object) {
+    return axios({
+      url: "/api/ppt_page/save",
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      data,
+    });
+  },
 };

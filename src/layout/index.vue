@@ -1,5 +1,5 @@
 <template>
-    <v-layout>
+    <v-layout class="h-100">
         <v-navigation-drawer v-model="drawer">
             <template #prepend>
                 <v-sheet class="d-flex justify-center py-4">
@@ -24,7 +24,7 @@
             </template>
         </v-app-bar>
 
-        <v-main>
+        <v-main class="h-100" style="overflow: auto;">
             <slot></slot>
         </v-main>
     </v-layout>
@@ -44,19 +44,19 @@ const drawer = ref(true)
 const items = ref([
     {
         title: '课程广场',
-        prependIcon: 'mdi-palette-swatch-outline',
+        prependIcon: 'mdi-apple-keyboard-command',
         link: true,
         to: '/manage/course/all'
     },
     {
         title: '我的课程',
-        prependIcon: 'mdi-palette-swatch-outline',
+        prependIcon: 'mdi-table-eye',
         link: true,
         to: '/manage/course/student'
     },
     {
         title: '课程列表',
-        prependIcon: 'mdi-palette-swatch-outline',
+        prependIcon: 'mdi-application-edit-outline',
         link: true,
         to: '/manage/control'
     },
@@ -81,7 +81,5 @@ const handleSettings = () => {
 </script>
 
 <style lang="scss" scoped>
-.v-layout {
-    height: 100%;
-}
+ 
 </style>

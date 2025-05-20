@@ -26,75 +26,69 @@ export const courseApi = {
   },
 
   //获取课程分类，类型
-  getAllCourseTypesByClassfyId(params : {
-    types ?: string[];
-    categories ?: string[];
-    state ?: number | null,
-    page ?: number;
-    size ?: number;
-    name ?: string;
-
+  getAllCourseTypesByClassfyId(params: {
+    types?: string[];
+    categories?: string[];
+    state?: number | null;
+    page?: number;
+    size?: number;
+    name?: string;
   }) {
-
     return axios({
       url: "/api/course/search_byinfo",
       method: "get",
       params: {
-
-        type: params.types?.join(',') || "",
-        classify: params.categories?.join(',') || "",
+        type: params.types?.join(",") || "",
+        classify: params.categories?.join(",") || "",
         name: params.name,
         pageNum: params.page,
         pageSize: params.size,
-        state: params.state
+        state: 1,
       },
     });
   },
   //通过学生权限查所有课程
-  getAllCourseTypesByClassfyStuId(params : {
-    types ?: string[];
-    categories ?: string[];
-    state ?: number | null,
-    page ?: number;
-    size ?: number;
-    name ?: string;
-
+  getAllCourseTypesByClassfyStuId(params: {
+    types?: string[];
+    categories?: string[];
+    state?: number | null;
+    page?: number;
+    size?: number;
+    name?: string;
   }) {
-
     return axios({
       url: "/api/course/search_self",
       method: "get",
       params: {
-
-        type: params.types?.join(',') || "",
-        classify: params.categories?.join(',') || "",
+        type: params.types?.join(",") || "",
+        classify: params.categories?.join(",") || "",
         name: params.name,
         pageNum: params.page,
         pageSize: params.size,
-        state: params.state
+        state: 1,
       },
     });
   },
   //通过课程码添加课程
-  addCourseById(course_code : string) {
+  addCourseById(course_code: string) {
     return axios({
       url: `/api/course_user/add/${course_code}`,
       method: "get",
     });
   },
-  info(courseid : string) {
+  info(courseid: string) {
     return axios({
       url: `/api/course/search/${courseid}`,
       method: "get",
     });
   },
-  del(id : string) {
+  del(id: string) {
     return axios({
       url: "/api/course/del/" + id,
       method: "post",
     });
   },
-  save(data : object) {
+  save(data: object) {
     return axios({
       url: "/api/course/save",
       method: "post",
@@ -102,6 +96,33 @@ export const courseApi = {
         "Content-Type": "multipart/form-data",
       },
       data,
+    });
+  },
+  detail(courseid: string) {
+    return axios({
+      url: `/api/course/detail/${courseid}`,
+      method: "get",
+    });
+  },
+  manage(params: {
+    types?: string | null;
+    categories?: string | null;
+    state?: number | null;
+    page?: number;
+    size?: number;
+    name?: string;
+  }) {
+    return axios({
+      url: "/api/course/manage",
+      method: "get",
+      params: {
+        type: params.types,
+        classify: params.categories,
+        name: params.name,
+        pageNum: params.page,
+        pageSize: params.size,
+        state: params.state,
+      },
     });
   },
 };

@@ -32,7 +32,7 @@
     </v-card-text>
    <v-card-actions >
         <v-btn color="secondary" @click="$emit('view-details', course)">
-          查看课程详情
+          进入课程
         </v-btn>
       </v-card-actions>
 

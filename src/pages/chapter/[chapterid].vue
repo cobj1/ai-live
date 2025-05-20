@@ -17,7 +17,8 @@
         </v-container>
     </AuroraBackground>
 
-    <v-empty-state v-else image="https://cdn.vuetifyjs.com/docs/images/components/v-empty-state/teamwork.png">
+    <v-empty-state v-else-if="!loading"
+        image="https://cdn.vuetifyjs.com/docs/images/components/v-empty-state/teamwork.png">
         <template v-slot:title>
             <div class="text-subtitle-2 mt-8">
                 没有相应的课程内容
@@ -57,6 +58,8 @@ const videos = computed(() => ppts.value.map(item => item.videoPath))
 
 const current = ref(0)
 
+const loading = ref(true)
+
 const nextPPT = () => {
     if (current.value + 1 < images.value.length) {
         current.value++
@@ -70,7 +73,11 @@ const loadChapter = async () => {
 }
 
 const loadItmes = async () => {
+    loading.value = true
+
     ppts.value = await PPTApi.list(route.params.chapterid)
+
+    loading.value = false
 }
 
 const handlePPTChange = (index) => {
